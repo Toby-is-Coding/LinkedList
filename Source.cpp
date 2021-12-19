@@ -110,9 +110,8 @@ int main()
     deleteLL(headOdd);*/
 
     LL ll, ll2(4);
-    ll.insert(ll2);
-    ll.print();
-    //error with destructor
+    //ll2[2] = something; //fix this: it's implcitly casting LL to Node**... we want this to not be the case when using operator[]
+    ll2.print();
 }
 
 void deleteLL(Node* head) {

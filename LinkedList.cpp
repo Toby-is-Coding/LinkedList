@@ -83,6 +83,7 @@ void LL::erase(unsigned index, unsigned plus)
 	if (index < 0 || index >= _size) {
 		return; //out of scope
 	}
+	if (plus > _size - 1) plus = _size - index - 1; //if plus too big, erase until the end
 	_size -= plus + 1; //update size
 	Node* tmp;
 	if (index == 0) { //delete first object (head's node)
@@ -150,14 +151,14 @@ void LL::insert(Node** nodes, unsigned index, unsigned amount)
 	return;
 }
 
-void LL::flood(int data, int start, int end)
+void LL::flood(int data, unsigned start, int end)
 {
-	if (end < 0) {
-		end = _size; //default argument
+	if (end < 0 || end >= _size) {
+		end = _size - 1; //default argument
 	}
 	if (head != NULL) {
 		Node* it = head;
-		for (int i = 0; i < end; i++) {
+		for (int i = 0; i <= end; i++) {
 			if (i >= start) it->data = data; //only assign data after iterator's reached the starting position
 			it = it->ptr; //iterate over to next node
 		}
@@ -166,6 +167,7 @@ void LL::flood(int data, int start, int end)
 
 void LL::print()
 {
+	if (head == NULL) return; //LL of nothing
 	Node* it = head;
 	for (int i = 0; i < _size - 1; i++) {
 		std::cout << '[' << it->data << "], ";
@@ -185,7 +187,7 @@ const size_t LL::size_of()
 	return S;
 }
 
-Node* LL::operator[](unsigned index)
+Node* LL::operator()(unsigned index)
 {
 	if (index < 0 || index >= _size) {
 		return nullptr;
@@ -199,11 +201,15 @@ Node* LL::operator[](unsigned index)
 
 LL::operator Node** ()
 {
+	if (_size == 0) return nullptr;
 	arr = new Node*[_size];
-	Node* tmp = head;
+	Node* it = head, * tmp;
 	for (int i = 0; i < _size; i++) {
+		tmp = new Node; //create new so we point to copies of the nodes instead of the nodes themselves
+		tmp->data = it->data; //copy copy
+		tmp->ptr = NULL;
 		arr[i] = tmp; //save to array!
-		tmp = tmp->ptr; //iterate forth!
+		it = it->ptr; //iterate forth!
 	}
 	return arr; //implicit casting of Node* array to Node**
 }
